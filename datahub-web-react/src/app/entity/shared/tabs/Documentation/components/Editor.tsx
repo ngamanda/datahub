@@ -1,4 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
+import styled from 'styled-components';
+import DOMPurify from 'dompurify';
 import {
     BlockquoteExtension,
     BoldExtension,
@@ -6,6 +8,7 @@ import {
     CodeBlockExtension,
     CodeExtension,
     HeadingExtension,
+    HistoryExtension,
     HorizontalRuleExtension,
     ImageExtension,
     ItalicExtension,
@@ -27,16 +30,51 @@ import {
 } from '@remirror/react';
 import { AllStyledComponent } from '@remirror/styles/styled-components';
 import type { RemirrorJSON } from '@remirror/core';
+import { EditorTheme } from './EditorTheme';
 
-import 'remirror/styles/all.css';
+const Container = styled.div`
+    .remirror-editor-wrapper {
+        padding-top: 0;
+    }
+
+    .remirror-editor.ProseMirror {
+        border: 0;
+        box-shadow: none;
+        line-height: 1.5;
+        overflow-y: auto;
+        font-size: var(--rmr-font-size-default);
+
+        &:active,
+        &:focus {
+            box-shadow: none;
+        }
+
+        hr {
+            margin: 2rem 0;
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+    }
+`;
 
 type EditorProps = {
-    editable?: boolean;
+    readonly?: boolean;
     content?: string;
     onChange?: (json: RemirrorJSON) => void;
 };
 
+function parseContent(content?: string) {
+    try {
+        if (!content) return undefined;
+        return JSON.parse(content);
+    } catch (e) {
+        return content;
+    }
+}
+
 export const Editor = forwardRef((props: EditorProps, ref) => {
+    const { content, readonly, onChange } = props;
+    const parsedContent = parseContent(content);
+
     const { manager, state, getContext } = useRemirror({
         extensions: () => [
             new BlockquoteExtension(),
@@ -45,34 +83,39 @@ export const Editor = forwardRef((props: EditorProps, ref) => {
             new CodeBlockExtension(),
             new CodeExtension(),
             new HeadingExtension(),
+            new HistoryExtension(),
             new HorizontalRuleExtension(),
-            new ImageExtension({ enableResizing: true }) as any,
+            new ImageExtension({ enableResizing: !readonly }) as any,
             new ItalicExtension(),
             new LinkExtension({ autoLink: true }),
             new ListItemExtension(),
-            new MarkdownExtension(),
+            new MarkdownExtension({ htmlSanitizer: DOMPurify.sanitize }),
             new OrderedListExtension(),
             new UnderlineExtension(),
             new StrikeExtension(),
-            new TableExtension(),
+            new TableExtension({ resizable: !readonly }),
         ],
-        content: props?.content,
+        content: parsedContent,
         stringHandler: 'markdown',
     });
 
     useImperativeHandle(ref, () => getContext(), [getContext]);
 
     return (
-        <div className="remirror-theme">
+        <Container>
             <AllStyledComponent>
-                <ThemeProvider>
-                    <Remirror editable={props?.editable} manager={manager} initialContent={props?.content || state}>
+                <ThemeProvider theme={EditorTheme}>
+                    <Remirror editable={!readonly} manager={manager} initialContent={state}>
                         <EditorComponent />
-                        <TableComponents enableTableCellMenu />
-                        {props?.onChange && <OnChangeJSON onChange={props.onChange} />}
+                        <TableComponents
+                            enableTableCellMenu={!readonly}
+                            enableTableDeleteButton={!readonly}
+                            enableTableDeleteRowColumnButton={!readonly}
+                        />
+                        {onChange && <OnChangeJSON onChange={onChange} />}
                     </Remirror>
                 </ThemeProvider>
             </AllStyledComponent>
-        </div>
+        </Container>
     );
 });

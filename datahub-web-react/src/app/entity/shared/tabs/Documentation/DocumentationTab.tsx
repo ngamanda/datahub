@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Divider, Typography } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import DOMPurify from 'dompurify';
 
 import TabToolbar from '../../components/styled/TabToolbar';
 import { AddLinkModal } from '../../components/styled/AddLinkModal';
@@ -33,7 +32,6 @@ export const DocumentationTab = ({ properties }: { properties?: Props }) => {
     const { urn, entityData } = useEntityData();
     const refetch = useRefetch();
     const description = entityData?.editableProperties?.description || entityData?.properties?.description || '';
-    const sanitizedDescription = DOMPurify.sanitize(description);
     const links = entityData?.institutionalMemory?.elements || [];
     const localStorageDictionary = localStorage.getItem(EDITED_DESCRIPTIONS_CACHE_NAME);
 
@@ -53,7 +51,7 @@ export const DocumentationTab = ({ properties }: { properties?: Props }) => {
         </>
     ) : (
         <>
-            {sanitizedDescription || links.length ? (
+            {description || links.length ? (
                 <>
                     <TabToolbar>
                         <div>
@@ -67,8 +65,8 @@ export const DocumentationTab = ({ properties }: { properties?: Props }) => {
                         </div>
                     </TabToolbar>
                     <DocumentationContainer>
-                        {sanitizedDescription ? (
-                            <Editor editable={false} content={sanitizedDescription} />
+                        {description ? (
+                            <Editor readonly content={description} />
                         ) : (
                             <Typography.Text type="secondary">No documentation added yet.</Typography.Text>
                         )}

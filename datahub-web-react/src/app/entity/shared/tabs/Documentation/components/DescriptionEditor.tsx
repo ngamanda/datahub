@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { message, Button } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import DOMPurify from 'dompurify';
 
 import analytics, { EventType, EntityActionType } from '../../../../../analytics';
 
@@ -33,18 +32,16 @@ export const DescriptionEditor = ({ onComplete }: { onComplete?: () => void }) =
     const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
     const updateDescriptionLegacy = () => {
-        const sanitizedDescription = DOMPurify.sanitize(updatedDescription);
         return updateEntity?.({
-            variables: { urn: mutationUrn, input: { editableProperties: { description: sanitizedDescription || '' } } },
+            variables: { urn: mutationUrn, input: { editableProperties: { description: updatedDescription || '' } } },
         });
     };
 
     const updateDescription = () => {
-        const sanitizedDescription = DOMPurify.sanitize(updatedDescription);
         return updateDescriptionMutation({
             variables: {
                 input: {
-                    description: sanitizedDescription,
+                    description: updatedDescription,
                     resourceUrn: mutationUrn,
                 },
             },
@@ -144,7 +141,6 @@ export const DescriptionEditor = ({ onComplete }: { onComplete?: () => void }) =
             <Editor
                 ref={editorRef}
                 content={updatedDescription}
-                // initialContent={JSON.parse(updatedDescription)}
                 onChange={(v) => handleEditorChange(JSON.stringify(v) || '')}
             />
             {cancelModalVisible && (
