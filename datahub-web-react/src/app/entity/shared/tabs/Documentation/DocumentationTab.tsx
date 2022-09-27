@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Divider, Typography } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import MDEditor from '@uiw/react-md-editor';
 import DOMPurify from 'dompurify';
 
 import TabToolbar from '../../components/styled/TabToolbar';
@@ -16,6 +15,7 @@ import { LinkList } from './components/LinkList';
 
 import { useEntityData, useRefetch, useRouteToTab } from '../../EntityContext';
 import { EDITED_DESCRIPTIONS_CACHE_NAME } from '../../utils';
+import { Editor } from './components/Editor';
 
 const DocumentationContainer = styled.div`
     margin: 0 auto;
@@ -68,7 +68,7 @@ export const DocumentationTab = ({ properties }: { properties?: Props }) => {
                     </TabToolbar>
                     <DocumentationContainer>
                         {sanitizedDescription ? (
-                            <MDEditor.Markdown style={{ fontWeight: 400 }} source={sanitizedDescription} />
+                            <Editor editable={false} content={sanitizedDescription} />
                         ) : (
                             <Typography.Text type="secondary">No documentation added yet.</Typography.Text>
                         )}

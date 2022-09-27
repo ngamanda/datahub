@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { message, Button } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import DOMPurify from 'dompurify';
 
 import analytics, { EventType, EntityActionType } from '../../../../../analytics';
 
-import StyledMDEditor from '../../../components/styled/StyledMDEditor';
 import TabToolbar from '../../../components/styled/TabToolbar';
 
 import { GenericEntityUpdate } from '../../../types';
@@ -13,8 +12,10 @@ import { useEntityData, useEntityUpdate, useMutationUrn, useRefetch } from '../.
 import { useUpdateDescriptionMutation } from '../../../../../../graphql/mutations.generated';
 import { DiscardDescriptionModal } from './DiscardDescriptionModal';
 import { EDITED_DESCRIPTIONS_CACHE_NAME } from '../../../utils';
+import { Editor } from './Editor';
 
 export const DescriptionEditor = ({ onComplete }: { onComplete?: () => void }) => {
+    const editorRef = useRef();
     const mutationUrn = useMutationUrn();
     const { entityType, entityData } = useEntityData();
     const refetch = useRefetch();
@@ -136,15 +137,15 @@ export const DescriptionEditor = ({ onComplete }: { onComplete?: () => void }) =
                 <Button type="text" onClick={showModal}>
                     Back
                 </Button>
-                <Button onClick={handleSaveDescription} disabled={!isDescriptionUpdated}>
+                <Button onClick={handleSaveDescription}>
                     <CheckOutlined /> Save
                 </Button>
             </TabToolbar>
-            <StyledMDEditor
-                value={updatedDescription}
-                onChange={(v) => handleEditorChange(v || '')}
-                preview="live"
-                visiableDragbar={false}
+            <Editor
+                ref={editorRef}
+                content={updatedDescription}
+                // initialContent={JSON.parse(updatedDescription)}
+                onChange={(v) => handleEditorChange(JSON.stringify(v) || '')}
             />
             {cancelModalVisible && (
                 <DiscardDescriptionModal
