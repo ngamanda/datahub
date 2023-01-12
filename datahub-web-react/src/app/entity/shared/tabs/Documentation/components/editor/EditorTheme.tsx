@@ -2,6 +2,8 @@ import { defaultRemirrorTheme } from '@remirror/theme';
 import type { RemirrorThemeType } from '@remirror/theme';
 import styled from 'styled-components';
 
+import { extensionTablesStyledCss } from '@remirror/styles/styled-components';
+
 import { ANTD_GRAY } from '../../../../constants';
 
 export const EditorTheme: RemirrorThemeType = {
@@ -34,6 +36,8 @@ export const EditorTheme: RemirrorThemeType = {
 };
 
 export const EditorContainer = styled.div`
+    ${extensionTablesStyledCss}
+
     font-weight: 400;
     display: flex;
     flex: 1 1 auto;
