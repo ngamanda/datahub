@@ -21,9 +21,9 @@ import {
     TableExtension,
     UnderlineExtension,
 } from 'remirror/extensions';
-import { EditorComponent, Remirror, useRemirror, ThemeProvider, TableComponents } from '@remirror/react';
+import { EditorComponent, Remirror, useRemirror, TableComponents } from '@remirror/react';
 import { useMount } from 'react-use';
-import { EditorContainer, EditorTheme } from './EditorTheme';
+import { EditorContainer } from './EditorTheme';
 import { htmlToMarkdown } from './extensions/htmlToMarkdown';
 import { markdownToHtml } from './extensions/markdownToHtml';
 import { CodeBlockToolbar } from './toolbar/CodeBlockToolbar';
@@ -83,21 +83,19 @@ export const Editor = forwardRef((props: EditorProps) => {
 
     return (
         <EditorContainer className={className}>
-            <ThemeProvider theme={EditorTheme}>
-                <Remirror classNames={['ant-typography']} editable={!readOnly} manager={manager} initialContent={state}>
-                    {!readOnly && (
-                        <>
-                            <Toolbar />
-                            <CodeBlockToolbar />
-                            <FloatingToolbar />
-                            <TableComponents tableCellMenuProps={{ Component: TableCellMenu }} />
-                            <MentionsComponent />
-                            {onChange && <OnChangeMarkdown onChange={onChange} />}
-                        </>
-                    )}
-                    <EditorComponent />
-                </Remirror>
-            </ThemeProvider>
+            <Remirror classNames={['ant-typography']} editable={!readOnly} manager={manager} initialContent={state}>
+                {!readOnly && (
+                    <>
+                        <Toolbar />
+                        <CodeBlockToolbar />
+                        <FloatingToolbar />
+                        <TableComponents tableCellMenuProps={{ Component: TableCellMenu }} />
+                        <MentionsComponent />
+                        {onChange && <OnChangeMarkdown onChange={onChange} />}
+                    </>
+                )}
+                <EditorComponent />
+            </Remirror>
         </EditorContainer>
     );
 });
