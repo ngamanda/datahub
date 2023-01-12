@@ -2,20 +2,6 @@ import { defaultRemirrorTheme } from '@remirror/theme';
 import type { RemirrorThemeType } from '@remirror/theme';
 import styled from 'styled-components';
 
-import {
-    extensionBlockquoteStyledCss,
-    extensionCalloutStyledCss,
-    extensionCodeBlockStyledCss,
-    extensionCountStyledCss,
-    extensionGapCursorStyledCss,
-    extensionImageStyledCss,
-    extensionListStyledCss,
-    extensionMentionAtomStyledCss,
-    extensionPlaceholderStyledCss,
-    extensionPositionerStyledCss,
-    extensionTablesStyledCss,
-} from '@remirror/styles/styled-components';
-
 import { ANTD_GRAY } from '../../../../constants';
 
 export const EditorTheme: RemirrorThemeType = {
@@ -48,18 +34,6 @@ export const EditorTheme: RemirrorThemeType = {
 };
 
 export const EditorContainer = styled.div`
-    ${extensionBlockquoteStyledCss}
-    ${extensionCalloutStyledCss}
-    ${extensionCodeBlockStyledCss}
-    ${extensionCountStyledCss}
-    ${extensionGapCursorStyledCss}
-    ${extensionImageStyledCss}
-    ${extensionListStyledCss}
-    ${extensionMentionAtomStyledCss}
-    ${extensionPlaceholderStyledCss}
-    ${extensionPositionerStyledCss}
-    ${extensionTablesStyledCss}
-
     font-weight: 400;
     display: flex;
     flex: 1 1 auto;

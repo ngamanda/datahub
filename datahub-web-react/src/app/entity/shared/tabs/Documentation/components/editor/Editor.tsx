@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
+import React, { forwardRef, useEffect } from 'react';
 import DOMPurify from 'dompurify';
 import {
     BlockquoteExtension,
@@ -41,9 +41,9 @@ type EditorProps = {
     className?: string;
 };
 
-export const Editor = forwardRef((props: EditorProps, ref) => {
+export const Editor = forwardRef((props: EditorProps) => {
     const { content, readOnly, onChange, className } = props;
-    const { manager, state, getContext } = useRemirror({
+    const { manager, state } = useRemirror({
         extensions: () => [
             new BlockquoteExtension(),
             new BoldExtension(),
@@ -70,8 +70,6 @@ export const Editor = forwardRef((props: EditorProps, ref) => {
         content,
         stringHandler: 'markdown',
     });
-
-    useImperativeHandle(ref, () => getContext(), [getContext]);
 
     useMount(() => {
         manager.view.focus();
