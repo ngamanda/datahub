@@ -50,10 +50,17 @@ class FlagsConfig(ConfigModel):
     )
 
     generate_browse_path_v2_dry_run: bool = Field(
-        default=True,
+        default=False,
         description=(
             "Run through browse paths v2 generation but do not actually write the aspects to DataHub. "
             "Requires `generate_browse_path_v2` to also be enabled."
+        ),
+    )
+
+    generate_memory_profiles: Optional[str] = Field(
+        default=None,
+        description=(
+            "Generate memray memory dumps for ingestion process by providing a path to write the dump file in."
         ),
     )
 
@@ -65,7 +72,7 @@ class PipelineConfig(ConfigModel):
 
     source: SourceConfig
     sink: DynamicTypedConfig
-    transformers: Optional[List[DynamicTypedConfig]]
+    transformers: Optional[List[DynamicTypedConfig]] = None
     flags: FlagsConfig = Field(default=FlagsConfig(), hidden_from_docs=True)
     reporting: List[ReporterConfig] = []
     run_id: str = DEFAULT_RUN_ID
